@@ -1,21 +1,23 @@
 import {db} from "@/lib/db";
 import {auth, currentUser} from "@clerk/nextjs/server";
+import {Profile} from "@prisma/client";
+
 
 export const currentUserProfile = async (redirect?: boolean) => {
     const user = await currentUser();
     if (!user) {
         if (redirect) {
-            return auth();
+            await auth();
+            return null;
         }
         return null;
     }
 
-    const profile = await db.profile.findUnique({
+    const profile: Profile = await db.profile.findUnique({
         where: {
             clerk_id: user.id,
         }
     });
-
 
     if (profile) {
         if (profile.name != `${user.firstName} ${user.lastName}`) {
@@ -39,12 +41,13 @@ export const currentUserProfile = async (redirect?: boolean) => {
                 name: `${user.firstName} ${user.lastName}`,
                 imageUrl: user.imageUrl,
             }
-        });
+        }) as Profile;
     } catch (e) {
+        console.error(e);
         return (await db.profile.findUnique({
             where: {
                 clerk_id: user.id,
             }
-        }));
+        })) as Profile;
     }
 }

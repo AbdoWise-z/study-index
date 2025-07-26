@@ -32,6 +32,7 @@ export default async function RootLayout({
     children: React.ReactNode
 }>) {
     const user = await currentUserProfile();
+
     return (
         <ClerkProvider>
             <html lang="en">
