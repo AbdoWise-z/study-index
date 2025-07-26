@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -120,3 +122,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .prose-no-margin :where(p, h1, h2, h3, h4, h5, h6, ul, ol, li, blockquote, pre) {
+    margin: 0 !important;
+  }
+}
+
