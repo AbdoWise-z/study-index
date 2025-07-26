@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccessLevel {
+  NORMAL
+  MODIRATOR
+}
+
+enum VerificationStatus {
+  VERIFIED
+  NOT_VERIFIED
+  PENDING
+}
+
+model Profile {
+  id       String @id @default(uuid()) @map("id")
+  clerk_id String @unique
+
+  name     String
+  imageUrl String
+
+  level        AccessLevel @default(NORMAL)
+  verification VerificationStatus @default(NOT_VERIFIED)
+  idUrl        String @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts    Post[]
+  comments Comment[]
+}
+
+model Post {
+  id       String @id @default(uuid()) @map("id")
+
+  owner_id String
+  owner    Profile @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+
+  verification VerificationStatus @default(PENDING)
+
+  title            String
+  votes            Int
+  institutionName  String
+  institutionLink  String
+  opportunityLink  String
+
+  content          String
+  country          String
+  field            String
+  tags             String[]
+  level            String
+
+  comments         Comment[]
+  commentsCount    Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Comment {
+  id       String @id @default(uuid()) @map("id")
+
+  post_id String
+  user_id String
+
+  user    Profile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post    Post    @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  content         String
+  votes           Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
