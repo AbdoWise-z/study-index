@@ -13,7 +13,7 @@ export const currentUserProfile = async (redirect?: boolean) => {
         return null;
     }
 
-    const profile: Profile = await db.profile.findUnique({
+    const profile: Profile | null = await db.profile.findUnique({
         where: {
             clerk_id: user.id,
         }

@@ -85,3 +85,21 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model UpVote {
+  id       String @id @default(uuid()) @map("id")
+  obj_id   String
+  user_id  String
+
+  @@unique([obj_id, user_id])
+  @@index([obj_id, user_id])
+}
+
+model DownVote {
+  id       String @id @default(uuid()) @map("id")
+  obj_id   String
+  user_id  String
+
+  @@unique([obj_id, user_id])
+  @@index([obj_id, user_id])
+}
